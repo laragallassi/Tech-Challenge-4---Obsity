@@ -10,7 +10,7 @@ st.set_page_config(layout="wide", page_title="Sistema de Saúde - Obesidade")
 # O cache evita que o Streamlit leia o CSV toda vez que você clicar em um botão
 @st.cache_data
 def carregar_dados_dashboard():
-    df = pd.read_csv("obesity.csv")
+    df = pd.read_csv("Obesity.csv")
     # Arredondamento obrigatório conforme dicionário
     cols_to_round = ['FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
     for col in cols_to_round:
