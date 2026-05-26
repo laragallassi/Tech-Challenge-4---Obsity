@@ -10,6 +10,11 @@ le_target = joblib.load('target_encoder.pkl')
 st.title("Sistema Preditivo de Diagnóstico de Obesidade")
 st.write("Insira os dados do paciente para prever o risco de obesidade.")
 
+# Dicionários de mapeamento (Traduzindo da Interface em Português para o Modelo em Inglês)
+map_sn = {'Sim': 'yes', 'Não': 'no'}
+map_freq = {'Não': 'no', 'Algumas Vezes': 'Sometimes', 'Frequentemente': 'Frequently', 'Sempre': 'Always'}
+map_trans = {'Carro': 'Automobile', 'Moto': 'Motorbike', 'Bicicleta': 'Bike', 'Transporte Público': 'Public_Transportation', 'A Pé': 'Walking'}
+
 # Coleta de Inputs da Equipe Médica
 col1, col2 = st.columns(2)
 
@@ -35,12 +40,24 @@ with col2:
 
 # Processamento da Predição
 if st.button("Realizar Diagnóstico"):
-    # Estruturar os dados de entrada
+    # Estruturar os dados de entrada aplicando os mapeamentos de volta para o inglês
     input_data = pd.DataFrame({
-        'Gender': [gender], 'Age': [age], 'Height': [height], 'Weight': [weight],
-        'family_history': [family_history], 'FAVC': [favc], 'FCVC': [fcvc], 'NCP': [ncp],
-        'CAEC': [caec], 'SMOKE': [smoke], 'CH2O': [ch2o], 'SCC': [scc],
-        'FAF': [faf], 'TUE': [tue], 'CALC': [calc], 'MTRANS': [mtrans]
+        'Gender': [gender], 
+        'Age': [age], 
+        'Height': [height], 
+        'Weight': [weight],
+        'family_history': [map_sn[family_history]], 
+        'FAVC': [map_sn[favc]], 
+        'FCVC': [fcvc], 
+        'NCP': [ncp],
+        'CAEC': [map_freq[caec]], 
+        'SMOKE': [map_sn[smoke]], 
+        'CH2O': [ch2o], 
+        'SCC': [map_sn[scc]],
+        'FAF': [faf], 
+        'TUE': [tue], 
+        'CALC': [map_freq[calc]], 
+        'MTRANS': [map_trans[mtrans]]
     })
 
     # Aplicar as codificações salvas
