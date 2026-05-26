@@ -18,20 +18,20 @@ with col1:
     age = st.number_input("Idade", min_value=14, max_value=61, value=25)
     height = st.number_input("Altura (m)", min_value=1.0, max_value=2.5, value=1.70)
     weight = st.number_input("Peso (kg)", min_value=30, max_value=200, value=70)
-    family_history = st.selectbox("Histórico Familiar de Excesso de Peso", ['yes', 'no'])
-    favc = st.selectbox("Consumo de alimentos altamente calóricos (FAVC)", ['yes', 'no'])
+    family_history = st.selectbox("Histórico Familiar de Excesso de Peso", ['Sim', 'Não'])
+    favc = st.selectbox("Consumo de alimentos altamente calóricos (FAVC)", ['Sim', 'Não'])
     fcvc = st.selectbox("Frequência de consumo de vegetais (FCVC)", [1, 2, 3])
     ncp = st.selectbox("Número de refeições principais (NCP)", [1, 2, 3, 4])
 
 with col2:
-    caec = st.selectbox("Consumo de alimentos entre refeições (CAEC)", ['no', 'Sometimes', 'Frequently', 'Always'])
+    caec = st.selectbox("Consumo de alimentos entre refeições (CAEC)", ['Não', 'Algumas Vezes', 'Frequentemente', 'Sempre'])
     smoke = st.selectbox("Fumante", ['yes', 'no'])
     ch2o = st.selectbox("Consumo diário de água (CH2O)", [1, 2, 3])
     scc = st.selectbox("Monitora ingestão calórica (SCC)", ['yes', 'no'])
     faf = st.selectbox("Frequência de atividade física (FAF)", [0, 1, 2, 3])
     tue = st.selectbox("Tempo diário usando dispositivos eletrônicos (TUE)", [0, 1, 2])
-    calc = st.selectbox("Consumo de álcool (CALC)", ['no', 'Sometimes', 'Frequently', 'Always'])
-    mtrans = st.selectbox("Meio de transporte (MTRANS)", ['Automobile', 'Motorbike', 'Bike', 'Public_Transportation', 'Walking'])
+    calc = st.selectbox("Consumo de álcool (CALC)", ['Não', 'Algumas Vezes', 'Frequentemente', 'Sempre'])
+    mtrans = st.selectbox("Meio de transporte (MTRANS)", ['Carro', 'Moto', 'Bicicleta', 'Transporte Público', 'A Pé'])
 
 # Processamento da Predição
 if st.button("Realizar Diagnóstico"):
