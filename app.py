@@ -25,9 +25,9 @@ with col1:
 
 with col2:
     caec = st.selectbox("Consumo de alimentos entre refeições (CAEC)", ['Não', 'Algumas Vezes', 'Frequentemente', 'Sempre'])
-    smoke = st.selectbox("Fumante", ['yes', 'no'])
+    smoke = st.selectbox("Fumante", ['Sim', 'Não'])
     ch2o = st.selectbox("Consumo diário de água (CH2O)", [1, 2, 3])
-    scc = st.selectbox("Monitora ingestão calórica (SCC)", ['yes', 'no'])
+    scc = st.selectbox("Monitora ingestão calórica (SCC)", ['Sim', 'Não'])
     faf = st.selectbox("Frequência de atividade física (FAF)", [0, 1, 2, 3])
     tue = st.selectbox("Tempo diário usando dispositivos eletrônicos (TUE)", [0, 1, 2])
     calc = st.selectbox("Consumo de álcool (CALC)", ['Não', 'Algumas Vezes', 'Frequentemente', 'Sempre'])
