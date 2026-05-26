@@ -99,9 +99,9 @@ with tab2:
     with graf_col1:
         # Gráfico 1: Distribuição
         fig1 = px.histogram(
-            df_analise, x="Obesity_level", color="Obesity_level",
+            df_analise, x="Obesity", color="Obesity",
             title="Distribuição de Pacientes por Nível de Obesidade",
-            category_orders={"Obesity_level": ordem_obesidade},
+            category_orders={"Obesity": ordem_obesidade},
             text_auto=True
         )
         fig1.update_layout(xaxis_title="Nível de Obesidade", yaxis_title="Quantidade", showlegend=False)
@@ -110,9 +110,9 @@ with tab2:
     with graf_col2:
         # Gráfico 2: Histórico Familiar
         fig2 = px.histogram(
-            df_analise, x="Obesity_level", color="family_history", barmode="group",
+            df_analise, x="Obesity", color="family_history", barmode="group",
             title="Impacto do Histórico Familiar",
-            category_orders={"Obesity_level": ordem_obesidade},
+            category_orders={"Obesity": ordem_obesidade},
             text_auto=True, color_discrete_map={"yes": "#EF553B", "no": "#636EFA"}
         )
         fig2.update_layout(xaxis_title="Nível de Obesidade", yaxis_title="Quantidade", legend_title="Histórico Familiar")
@@ -120,9 +120,9 @@ with tab2:
 
     # Gráfico 3: Atividade Física (Ocupando a largura total embaixo)
     fig3 = px.box(
-        df_analise, x="Obesity_level", y="FAF", color="Obesity_level",
+        df_analise, x="Obesity", y="FAF", color="Obesity",
         title="Frequência Semanal de Atividade Física por Nível de Obesidade",
-        category_orders={"Obesity_level": ordem_obesidade}
+        category_orders={"Obesity": ordem_obesidade}
     )
     fig3.update_layout(xaxis_title="Nível de Obesidade", yaxis_title="Frequência Semanal (0 a 3)", showlegend=False)
     st.plotly_chart(fig3, use_container_width=True)
