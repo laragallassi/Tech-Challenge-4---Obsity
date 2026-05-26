@@ -7,14 +7,14 @@ import plotly.express as px
 st.set_page_config(layout="wide", page_title="Sistema de Saúde - Obesidade")
 
 # --- CARREGAMENTO DE DADOS E MODELOS ---
-# O cache evita que o Streamlit leia o CSV toda vez que você clicar em um botão
 @st.cache_data
 def carregar_dados_dashboard():
     df = pd.read_csv("Obesity.csv")
     # Arredondamento obrigatório conforme dicionário
     cols_to_round = ['FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
     for col in cols_to_round:
-        df[col] = df[col].round().astype(int)
+        if col in df.columns:
+            df[col] = df[col].round().astype(int)
     return df
 
 df_analise = carregar_dados_dashboard()
@@ -23,6 +23,17 @@ df_analise = carregar_dados_dashboard()
 model = joblib.load('modelo_obesidade.pkl')
 encoders = joblib.load('encoders.pkl')
 le_target = joblib.load('target_encoder.pkl')
+
+# Dicionário global de mapeamento e tradução dos níveis de obesidade
+map_diagnostico = {
+    'Insufficient_Weight': 'Peso Insuficiente',
+    'Normal_Weight': 'Peso Normal',
+    'Overweight_Level_I': 'Sobrepeso Grau I',
+    'Overweight_Level_II': 'Sobrepeso Grau II',
+    'Obesity_Type_I': 'Obesidade Grau I',
+    'Obesity_Type_II': 'Obesidade Grau II',
+    'Obesity_Type_III': 'Obesidade Grau III'
+}
 
 # --- ESTRUTURA DA PÁGINA ---
 st.title("Tech Challenge: Diagnóstico e Análise de Obesidade")
@@ -78,9 +89,10 @@ with tab1:
             input_data[col] = encoders[col].transform(input_data[col])
 
         predicao = model.predict(input_data)
-        diagnostico = le_target.inverse_transform(predicao)[0]
+        diagnostico_en = le_target.inverse_transform(predicao)[0]
+        diagnostico_pt = map_diagnostico.get(diagnostico_en, diagnostico_en)
         
-        st.success(f"Diagnóstico Preditivo: {diagnostico}")
+        st.success(f"Diagnóstico Preditivo: {diagnostico_pt}")
 
 # ==========================================
 # ABA 2: PAINEL ANALÍTICO
@@ -88,41 +100,45 @@ with tab1:
 with tab2:
     st.header("Visão Analítica de Negócios")
     
-    ordem_obesidade = [
-        'Insufficient_Weight', 'Normal_Weight', 'Overweight_Level_I', 
-        'Overweight_Level_II', 'Obesity_Type_I', 'Obesity_Type_II', 'Obesity_Type_III'
+    # Tratamento e mapeamento dos valores das colunas para português antes da geração dos gráficos
+    df_analise['Nivel_Obesidade'] = df_analise['Obesity'].map(map_diagnostico)
+    df_analise['Historico_Familiar'] = df_analise['family_history'].map({'yes': 'Sim', 'no': 'Não'})
+
+    ordem_obesidade_pt = [
+        'Peso Insuficiente', 'Peso Normal', 'Sobrepeso Grau I', 
+        'Sobrepeso Grau II', 'Obesidade Grau I', 'Obesidade Grau II', 'Obesidade Grau III'
     ]
 
     # Dividindo a tela em duas colunas para os gráficos ficarem lado a lado
     graf_col1, graf_col2 = st.columns(2)
 
     with graf_col1:
-        # Gráfico 1: Distribuição
+        # Gráfico 1: Distribuição com eixos e categorias traduzidas
         fig1 = px.histogram(
-            df_analise, x="Obesity", color="Obesity",
+            df_analise, x="Nivel_Obesidade", color="Nivel_Obesidade",
             title="Distribuição de Pacientes por Nível de Obesidade",
-            category_orders={"Obesity": ordem_obesidade},
+            category_orders={"Nivel_Obesidade": ordem_obesidade_pt},
             text_auto=True
         )
         fig1.update_layout(xaxis_title="Nível de Obesidade", yaxis_title="Quantidade", showlegend=False)
-        st.plotly_chart(fig1, use_container_width=True) # Renderiza no Streamlit
+        st.plotly_chart(fig1, use_container_width=True)
 
     with graf_col2:
-        # Gráfico 2: Histórico Familiar
+        # Gráfico 2: Histórico Familiar com legenda e categorias traduzidas
         fig2 = px.histogram(
-            df_analise, x="Obesity", color="family_history", barmode="group",
+            df_analise, x="Nivel_Obesidade", color="Historico_Familiar", barmode="group",
             title="Impacto do Histórico Familiar",
-            category_orders={"Obesity": ordem_obesidade},
-            text_auto=True, color_discrete_map={"yes": "#EF553B", "no": "#636EFA"}
+            category_orders={"Nivel_Obesidade": ordem_obesidade_pt},
+            text_auto=True, color_discrete_map={"Sim": "#EF553B", "Não": "#636EFA"}
         )
         fig2.update_layout(xaxis_title="Nível de Obesidade", yaxis_title="Quantidade", legend_title="Histórico Familiar")
         st.plotly_chart(fig2, use_container_width=True)
 
-    # Gráfico 3: Atividade Física (Ocupando a largura total embaixo)
+    # Gráfico 3: Atividade Física com boxplot totalmente em português
     fig3 = px.box(
-        df_analise, x="Obesity", y="FAF", color="Obesity",
+        df_analise, x="Nivel_Obesidade", y="FAF", color="Nivel_Obesidade",
         title="Frequência Semanal de Atividade Física por Nível de Obesidade",
-        category_orders={"Obesity": ordem_obesidade}
+        category_orders={"Nivel_Obesidade": ordem_obesidade_pt}
     )
     fig3.update_layout(xaxis_title="Nível de Obesidade", yaxis_title="Frequência Semanal (0 a 3)", showlegend=False)
     st.plotly_chart(fig3, use_container_width=True)
